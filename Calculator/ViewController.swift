@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        readBrain()
     }
 
     override func didReceiveMemoryWarning() {
@@ -24,13 +24,19 @@ class ViewController: UIViewController {
 
     @IBAction func operation(_ sender: UIButton) {
         if let currentOperation = sender.currentTitle {
-            brain.setOperand(result)
+            if let operand = result {
+                brain.setOperand(operand)
+            }
             brain.performOperation(currentOperation)
+            readBrain()
             
-            result = brain.result
-            pendingOperation = brain.pendingOperation
             newOperand = true
         }
+    }
+    
+    private func readBrain() {
+        result = brain.result
+        pendingOperation = brain.pendingOperation
     }
 
     @IBAction func digit(_ sender: UIButton) {
@@ -50,19 +56,23 @@ class ViewController: UIViewController {
     
     private var newOperand = true
     
-    private var result: Double {
+    private var result: Double? {
         get {
-            if let text = resultLabel.text, let val = Double(text) {
-                return val
+            if let text = resultLabel.text {
+                return Double(text)
             } else {
-                return 0.0
+                return nil
             }
         }
         set {
-            if round(newValue) == newValue {
-                resultLabel.text = String(Int(newValue))
+            if let val = newValue {
+                if round(val) == val {
+                    resultLabel.text = String(Int(val))
+                } else {
+                    resultLabel.text = String(val)
+                }
             } else {
-                resultLabel.text = String(newValue)
+                resultLabel.text = "Error"
             }
         }
     }
@@ -72,7 +82,7 @@ class ViewController: UIViewController {
             return operationLabel.text
         }
         set {
-            operationLabel.text = newValue
+            operationLabel.text = newValue ?? " "
         }
     }
     

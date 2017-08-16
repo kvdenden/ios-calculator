@@ -62,9 +62,13 @@ class CalculatorBrain {
         }
     }
     
-    var result: Double {
+    var result: Double? {
         get {
-            return accumulator
+            if accumulator.isFinite {
+                return accumulator
+            } else {
+                return nil
+            }
         }
     }
     
